@@ -11,7 +11,6 @@ const { adminValidateID } = require('../middlewares/idValidation')
 const nocache = require('nocache')
 require('dotenv').config()
 
-const path = require('path');
 
 
 const storage = multer.diskStorage({
@@ -24,6 +23,7 @@ const storage = multer.diskStorage({
     },
 });
 
+
 const upload1 = multer({
     storage: storage,
     limits: {
@@ -31,7 +31,10 @@ const upload1 = multer({
     },
 });
 
-
+adminRoute.use((req, res, next) => {
+    req.app.set("layout", "admin/layouts");
+    next();
+});
 
 
 

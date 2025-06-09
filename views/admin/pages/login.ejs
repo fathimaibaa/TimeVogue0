@@ -59,11 +59,13 @@
 <script>
   const message = document.getElementById('message');
 
-  const hide = () => {
+const hide = () => {
+  if (message) {
     message.style.display = 'none';
   }
+};
 
-  setTimeout(hide, 3000);
+setTimeout(hide, 3000);
 </script>
 <script>
   
