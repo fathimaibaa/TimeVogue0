@@ -1,0 +1,107 @@
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Products List</h2>
+        </div>
+        <div>
+            <a href="/admin/product/addProduct" class="btn btn-primary btn-sm rounded">Add Product</a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <table style="width: 100%;" id="example" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th class="th-sm">Image</th>
+                    <th class="th-sm">Product name</th>
+                    <th class="th-sm">Brand</th>
+                    <th class="th-sm">Category</th>
+                    <th class="th-sm">Stock</th>
+                    <th class="th-sm">Sale Price</th>
+                    <th>List/Unlist</th>
+                    <th class="th-sm">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% productList.forEach(element => { %>
+                    <tr>
+                        <td><img src="/<%= element?.images[0]?.thumbnailUrl %>" style="max-width: 75px;max-height: 75px;" alt="Product Image"></td>
+                        <td><%= element.title %></td>
+                        <td><%= element.brand %></td>
+                        <td><%= element.categoryName?.categoryName %></td>
+                        <td><%= element.quantity %></td>
+                        <td><%= element.salePrice %></td>
+                        <td>
+                            <% if (element.isListed) { %>
+                                <button class="btn btn-danger btn-sm unblock-button" data-product-id="<%= element._id %>">Unlist</button>
+                            <% } else { %>
+                                <button class="btn btn-success btn-sm block-button" data-product-id="<%= element._id %>">List</button>
+                            <% } %>
+                        </td>
+                        <td>
+                            <a href="/admin/product/editProduct/<%- element._id %>">
+                                <button class="btn btn-info btn-sm ml-2"><i class="material-icons md-edit pb-1"></i></button>
+                            </a>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function getConfirmation(productId, action) {
+        let actionText = action === 'list' ? 'List' : 'Unlist';
+
+        Swal.fire({
+            title: `${actionText} Product?`,
+            text: `Are you sure to ${actionText.toLowerCase()} this product?`,
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: "No, Cancel",
+            confirmButtonText: `Yes, ${actionText}`,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/admin/product/${action}/${productId}`,
+                    method: 'post',
+                    success: (response) => {
+                        if (response.message) {
+                            Swal.fire({
+                                title: `${actionText} Product`,
+                                text: `${actionText} Product Successfully`,
+                                icon: "success",
+                            });
+
+                            
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                           
+                        }
+                    },
+                    error: (error) => {
+                        console.error("Error during the AJAX request:", error);
+                    }
+                });
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        
+        $('.block-button').click(function () {
+            let productId = $(this).data('product-id');
+            getConfirmation(productId, 'list');
+        });
+
+        $('.unblock-button').click(function () {
+            let productId = $(this).data('product-id');
+            getConfirmation(productId, 'unlist');
+        });
+
+        new DataTable('#example');
+    });
+</script>

@@ -1,0 +1,194 @@
+<div class="container">
+    <h2 mt-2>Add Product</h2>
+
+    <form action="/admin/product/addProduct" method="post" enctype="multipart/form-data" >
+        <div class="card">
+            <div class="card-body">
+                <hr class="mb-4 mt-0">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h6>1. General info</h6>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="mb-4">
+                            <label class="form-label"> Product Title</label>
+                            <input type="text" placeholder="Type here" id="title" name="title"
+                                class="form-control common-input">
+                            <div class="error-message"></div> 
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control common-input" id="description"
+                                name="description" rows="2"></textarea>
+                            <div class="error-message"></div> 
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Colors</label>
+                            <input type="text" placeholder="Type here" id="color" name="color"
+                                class="form-control common-input">
+                            <div class="error-message"></div> 
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Brand name</label>
+                            <select id="brand" class="form-control common-input" name="brand">
+                                <option value="">     </option>
+                                <option value="Casio">Casio</option>
+                                <option value="Casio Vintage">Casio Vintage</option>
+                                <option value="G-Shock">G-Shock</option>
+                                <option value="PRO TRECK">PRO TRECK</option>
+                                <option value="Titan">Titan</option>
+                            </select>
+                            <div class="error-message"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <hr class="mb-4 mt-0">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h6>2. Category</h6>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="mb-4">
+                            <select class="form-select" name="categoryName" id="category">
+                                <option value="">Select category</option>
+                                <% catList.forEach(category=> { %>
+                                    <option value="<%= category?._id %>">
+                                        <%= category.categoryName %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                  
+                            <div class="error-message"></div> 
+                        </div>
+                    </div>
+                </div>
+                <hr class="mb-4 mt-0">
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <h6>3. Pricing</h6>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="mb-4">
+                            <label for="Productprice">Product Price</label>
+                            <input type="text" placeholder="₹" name="productPrice" id="productPrice"
+                                class="form-control">
+                                <div class="error-message"></div> 
+                        </div>
+                        <div class="mb-4">
+                            <label for="salePrice">Sale Price</label>
+                            <input type="text" placeholder="₹" name="salePrice" id="salePrice" class="form-control">
+                            <div class="error-message"></div> 
+                        </div>
+                    </div> 
+                </div> 
+
+                <hr class="mb-4 mt-0">
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <h6>4. Stock</h6>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="mb-4">
+                            <label for="Quantity">Quantity</label>
+                            <input type="text" placeholder="No's" name="quantity" id="quantity" class="form-control">
+                            <div class="error-message"></div> 
+                        </div>
+                    </div> 
+                </div> 
+                <hr class="mb-4 mt-0">
+
+               
+
+
+
+
+
+  <div class="row">
+    <div class="col-md-3">
+      <h6>5. Media</h6>
+    </div>
+    <div class="col-md-9">
+      <div class="card p-md-5 p-2 me-md-5">
+        <h5>Choose product images</h5>
+        <div class="form-group mt-2" id="image-inputs-container">
+  <input
+    type="file"
+    class="form-control mb-2"
+    name="images"
+    accept="image/*"
+  />
+</div>
+<div id="image-preview-container" class="mt-2 d-flex flex-wrap gap-2"></div>
+
+          <div class="error-message"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary mb-4 mt-2">Add Product</button>
+</form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('image-inputs-container');
+    const previewContainer = document.getElementById('image-preview-container');
+
+    function createFileInput() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.name = 'images';
+      input.accept = 'image/*';
+      input.className = 'form-control mb-2';
+
+      input.addEventListener('change', onFileChange);
+      return input;
+    }
+
+    function onFileChange(e) {
+      const input = e.target;
+
+      // Clear previous previews
+      previewContainer.innerHTML = '';
+
+      // Collect all selected files (only the first file from each input)
+      const allFiles = [];
+      const inputs = container.querySelectorAll('input[type="file"]');
+      inputs.forEach((inp) => {
+        if (inp.files.length > 0) {
+          allFiles.push(inp.files[0]);
+        }
+      });
+
+      // Show previews
+      allFiles.forEach((file) => {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.alt = 'Image Preview';
+        img.className = 'img-thumbnail';
+        img.style.width = '100px';
+        img.style.height = '100px';
+        img.style.objectFit = 'cover';
+        previewContainer.appendChild(img);
+      });
+
+      // Add a new input if this is the last input and a file is selected
+      const inputsArray = Array.from(container.querySelectorAll('input[type="file"]'));
+      if (inputsArray[inputsArray.length - 1] === input) {
+        if (input.files.length > 0) {
+          container.appendChild(createFileInput());
+        }
+      }
+    }
+
+    // Attach event listener to the first input on page load
+    const firstInput = container.querySelector('input[type="file"]');
+    if (firstInput) {
+      firstInput.addEventListener('change', onFileChange);
+    }
+  });
+</script>  

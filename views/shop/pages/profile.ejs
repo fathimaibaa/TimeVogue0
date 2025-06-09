@@ -1,0 +1,265 @@
+<div class="border-top-3"></div>
+<br>
+
+
+
+<main class="col-md-9 mx-auto col-lg-10 px-md-4">
+    <div class="container ">
+      <div class="text-center mb-4">
+        <h2 class="display-5 fw-bold"> Account Details  </h2>
+        
+     
+      </div>
+     
+  
+      <div class="card shadow-lg p-4">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-4">
+              <h2 class="h4 fw-bold">Name:</h2>
+              <p class="lead">
+                <span id="userName">
+                  <%= user.userName %>
+                </span>
+               
+              </p> 
+            </div>
+
+            
+         
+          <div id="modal-container" >
+            <div class="modal-background">
+              <div class="modal" >
+                <button id="close" class="close-button">&#10005</button>
+                <form action="/edit-profile" method="POST">
+                  <div class="row">
+                      <div class="form-group col-md-12">
+                        
+                          <input required="" type="text" id="userName"
+                              class="form-control square" name="userName"
+                              value="<%= user.userName %>">
+                      </div>
+                      <br><br><br>
+                      <div class="form-group col-md-12">
+                         
+                          <input required="" type="email" id="email"
+                              class="form-control square" name="email"
+                              value="<%= user.email %>">
+                      </div>
+
+                      <div class="col-md-12">
+                          <button type="submit" class="btn btn-fill-out submit"
+                              name="submit" value="Submit">Save</button>
+                      </div>
+
+                  </div>
+              </form>
+                <svg class="modal-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"
+                  preserveAspectRatio="none">
+                  <rect x="0" y="0" fill="none" width="226" height="162" rx="3" ry="3"></rect>
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+
+
+            <div class="mb-4">
+              <h3 class="h4 fw-bold">Email:</h3>
+              <p class="lead"><%= user.email %></p>
+            </div>
+
+         
+         <button type="button" class="btn btn-link" id="change">
+          Change Password
+
+</form>
+
+ 
+</div>
+
+          </div>
+       
+        </div>
+       
+
+
+      </div>
+      <div id="confirmationMessage" style="display: none;"></div>
+      <div class="row mt-5 mb-3">
+        <div class="col-md-3">
+          <div class="card shadow">
+            <a href="/orders" class="text-decoration-none text-center p-4 d-block">
+              <i class="fas fa-shopping-bag fa-3x text-primary mb-3"></i>
+              <h3 class="h4 fw-bold">Orders</h3>
+              <p class="text-muted">Check your orders</p>
+            </a>
+          </div>
+        </div>
+       <div class="col-md-3">
+                    <div class="card shadow">
+                        <a href="/wallet/<%= wallet?._id %>" class="text-decoration-none text-center p-4 d-block"
+                            style="color: #cce5ff; border-radius: 15px;">
+                            <i class="fas fa-wallet fa-3x text-primary mb-3"></i>
+                            <h3 class="h4 fw-bold">Wallet</h3>
+                            <p class="text-muted">Balance: ₹ <%= wallet?.balance ? wallet.balance.toFixed(2) : "0" %></p>
+                        </a>
+                    </div>
+                </div>
+        <div class="col-md-3">
+          <div class="card shadow">
+            <a href="/cart" class="text-decoration-none text-center p-4 d-block">
+              <i class="fas fa-shopping-cart fa-3x text-success mb-3"></i>
+              <h3 class="h4 fw-bold">Cart</h3>
+              <p class="text-muted">Check your Cart</p>
+            </a>
+          </div>
+        </div>
+        
+      
+      
+ 
+  
+        
+        
+
+        <div class="col-md-3">
+          <div class="card shadow">
+            <a href="/savedAddress" class="text-decoration-none text-center p-4 d-block">
+              <i class="fas fa-map-marker-alt fa-3x text-info mb-3"></i>
+              <h3 class="h4 fw-bold">Address</h3>
+              <p class="text-muted">Saved Addresses & Edit</p>
+            </a>
+          </div>
+        </div>
+        <div class="mb-4">
+          <br>
+              <h2 class="h6 fw-bold text-success">Refer a friend and earn upto 30
+                  cashback</h2>
+         
+          <p class="lead">
+              <span id="referral-code">
+                  <%= user.referralCode %>
+              </span>
+              <button class="btn btn-sm ml-2" id="copy-button">
+                  <i class="fas fa-copy text-dark fa-sm mb-3" data-toggle="tooltip"
+                      data-placement="top"></i>
+              </button>
+          </p>
+      </div>
+        
+  </div> </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+      </div>
+    </div>
+
+  </main>
+
+
+<div id="confirmationMessage" style="display: none;"></div>
+
+ <script>
+  $(document).ready(function () {
+    $('.button').click(function () {
+      var buttonId = $(this).attr('id');
+      $('#modal-container').removeAttr('class').addClass(buttonId);
+      $('body').addClass('modal-active');
+    });
+
+    $('#close').click(function () {
+      $('#modal-container').addClass('out');
+      $('body').removeClass('modal-active');
+    });
+
+    $('#edit-profile-form').submit(function (event) {
+      event.preventDefault();
+
+     
+      $.ajax({
+        url: '/edit-profile',
+        method: 'POST',
+        data: $(this).serialize(),
+        success: function (response) {
+         
+          $('#userName').text(response.userName);
+
+         
+          $('#modal-container').addClass('out');
+          $('body').removeClass('modal-active');
+        },
+        error: function (error) {
+          console.error('Error updating profile:', error);
+        }
+      });
+    });
+
+    
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+
+
+
+<script>
+  document.getElementById("change").addEventListener("click", ()=>{
+    Swal.fire({
+  title: "Are you sure? to change password",
+ 
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Yes",
+  cancelButtonText: "No"
+}).then((result) => {
+  if (result.isConfirmed) {
+   
+     fetch("/changePassword", {
+    method: "GET",
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        console.error("Failed");
+      }
+    })
+    .then((responseData) => {
+      if (responseData) {
+      let timerInterval;
+Swal.fire({
+  title: "Reset Password Link Send To",
+  html: "<%=user.email%>",
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: () => {
+    Swal.showLoading();
+    const timer = Swal.getPopup().querySelector("b");
+    timerInterval = setInterval(() => {
+      timer.textContent = `${Swal.getTimerLeft()}`;
+    }, 200);
+  },
+  willClose: () => {
+    clearInterval(timerInterval);
+  }
+}).then((result) => {
+ 
+  if (result.dismiss === Swal.DismissReason.timer) {
+  
+  }
+});
+        
+      }
+    })
+    .catch((error) => {
+      console.error("An error occurred:", error);
+    });
+  }
+});
+  })
+</script>
+

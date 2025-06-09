@@ -1,0 +1,229 @@
+
+
+<div class="register-area ptb-100" style="background-color: #fff; color: #fff;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-12 col-lg-6 col-xl-6 ms-auto me-auto">
+                <div class="card shadow p-3" style="background-color: #3d3939; border: 1px solid #444;">
+                    <div class="row no-gutters">
+                      
+                        <div class="col-md-4 d-flex align-items-center justify-content-center">
+                            <img
+                                src="<%= order.product.images[0].imageUrl %>"
+                                class="card-img"
+                                alt="Product Image"
+                                style="border: 1px solid #fff;"
+                            />
+                        </div>
+                        
+
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                
+                                <h5 class="card-title" style="color: #fff;">
+                                    <strong>Product Name:</strong>
+                                    <%= order.product.title %>
+                                </h5>
+                               
+                                <p class="card-text" style="color: #ccc;">
+                                    <strong>Ordered Date:</strong>
+                                    <%= moment(orders.orderedDate).local().format('ddd, MMM D YYYY, h:mm:ss a') %>
+                                </p>
+                                
+
+                                <% if (order.status==="Shipped" ) { %>
+                                    <p class="card-text" style="color: #ccc;">
+                                        <strong>Shipped On:</strong>
+                                        <%= moment(order.shippedDate).local().format('ddd, MMM D YYYY, h:mm:ss a') %>
+                                    </p>
+                                    <% } else if (order.status === "Delivered") { %>
+                                        <p class="card-text" style="color: #ccc;">
+                                            <strong>Delivered On:</strong>
+                                            <%= moment(order.deliveredDate).local().format('ddd, MMM D YYYY, h:mm:ss a') %>
+                                        </p>
+                                    <% } %>
+                                    
+                               
+
+                               
+                                <p class="card-text" style="color: #ccc;">
+                                    <strong>Ship To Name:</strong>
+                                    <%= orders.shippingAddress %>
+                                </p>
+                                
+                                <p class="card-text" style="color: #ccc;">
+                                    <strong>Order Status:</strong>
+                                    <% if (order.status==='Pending' ) { %>
+                                    <span class="text-warning"> <%= order.status %> </span>
+                                    <% } else if (order.status==='Shipped' ) { %>
+                                    <span class="text-primary"> <%= order.status %> </span>
+                                    <% } else if (order.status==='Cancelled' || order.status==='Return Requested' ) { %>
+                                    <span class="text-danger"> <%= order.status %> </span>
+                                    <% } else if (order.status==='Delivered' ) { %>
+                                    <span class="text-success"> <%= order.status %> </span>
+                                    <% } else if (order.status==='Returned' ) { %>
+                                    <span class="text-info"> <%= order.status %> </span>
+                                    <% } %>
+                                </p>
+                                
+                                <p class="card-text" style="color: #ccc;"><strong>Product Price:</strong> ₹<%= order.price %></p>
+                                
+                                <% if (order.isPaid === "paid") { %>
+                                    <p class="card-text" style="color: #fff;"><strong>Payment Status: </strong><span class="capitalize text-success"><%= order.isPaid %></span></p>
+                                <% } else if (order.isPaid === "cod") { %>
+                                    <p class="card-text" style="color: #fff;"><strong>Payment Status: </strong><span class="capitalize text-warning"><%= order.isPaid %></span></p>
+                                <% } else if (order.isPaid === "pending") {%>
+                                    <p class="card-text" style="color: #fff;"><strong>Payment Status: </strong><span class="capitalize text-danger"><%= order.isPaid %></span></p>
+                                <% } %>
+                                
+                               
+                                <p class="card-text" style="color: #ccc;">
+                                    <strong>Quantity:</strong>
+                                    <%= order.quantity %>
+                                </p>
+
+                                <% if (order.status==="Delivered" ) { const deliveryDate=new Date(order.deliveredDate);
+                                const currentDate=new Date(); const daysDifference=(currentDate - deliveryDate) / (1000 * 60
+                                * 60 * 24); if (daysDifference <=7) { %>
+                                <button
+                                    type="button"
+                                    class="btn btn-danger h-auto"
+                                    data-toggle="modal"
+                                    data-target="#returnOrderModal"
+                                    style="background-color: #000; color: #fff;"
+                                >
+                                    Return Order
+                                </button>
+                                <% } else { %>
+                                                                    <button
+                                                                        type="button"
+                                                                        class="btn btn-info h-auto"
+                                                                        id="invoiceBtn"
+                                                                        data-invoice-id="<%= order._id %>"
+                                                                    >
+                                                                        Download Invoice
+                                                                    </button>
+
+                                <% } } else if (order.status==="Pending" || order.status==="Shipped" ) { %>
+                                <button class="btn btn-danger h-auto" data-toggle="modal" data-target="#cancelOrderModal" style="background-color: #000; color: #fff;">
+                                    Cancel Order
+                                </button>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <% if (order.status==="Delivered" ) { %>
+                    <hr class="border-2 border-secondary" style="border-top: 1px solid #fff;" />
+                    
+                
+                   
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div
+    class="modal fade"
+    id="cancelOrderModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" style="color: #d53131;">Confirm Cancellation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color: #00000015;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="color: #000000;">Are you sure you want to cancel this order?</div>
+            <div class="modal-footer">
+                <form action="/orders/single/<%= order._id %>?_method=PUT" method="post">
+                    <button type="submit" class="btn btn-danger h-auto" id="confirmCancelBtn" style="background-color: #000; color: #fff;">Confirm</button>
+                </form>
+                <button type="button" class="btn btn-secondary h-auto" data-dismiss="modal" style="background-color: #000; color: #fff;">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div
+    class="modal fade"
+    id="returnOrderModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="returnOrderModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog" role="document">
+        <form action="/orders/return/<%= order._id %>" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="returnOrderModalLabel" style="color: #fff;">Return Order</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" style="color: #a50505;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="reason" style="color: #0a0606;">Reason for Return</label>
+                        <select class="form-control" id="reason" name="reason" required style="background-color: #ffffff; color: #000000;">
+                            <option value="" disabled selected>Select a reason</option>
+                            <option value="item_description_mismatch">Item doesn't match the description</option>
+                            <option value="received_wrong_item">Received the wrong item</option>
+                            <option value="item_damaged_or_defective">Item arrived damaged or defective</option>
+                            <option value="changed_mind">Changed my mind</option>
+                            <option value="didnt_meet_expectations">Item didn't meet my expectations</option>
+                            <option value="no_longer_needed">Item is no longer needed</option>
+                            <option value="item_arrived_late">Item arrived late</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary h-auto" data-dismiss="modal" style="background-color: #bc1515; color: #fff;">Close</button>
+                    <button type="submit" class="btn btn-danger h-auto" style="background-color: #000000; color: #f5f5f5;">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById("invoiceBtn").addEventListener("click", function (orderId) {
+        var invoiceButton = this;
+        var invoiceId = this.getAttribute("data-invoice-id");
+       
+        invoiceButton.disabled = true;
+        invoiceButton.textContent = "Downloading...";
+        fetch(`/orders/download/${invoiceId}`)
+            .then((response) => {
+                if (response.ok) {
+                    return response.blob();
+                } else {
+                    console.error("Failed to download the invoice");
+                }
+            })
+            .then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "invoice.pdf";
+                a.click();
+                window.URL.revokeObjectURL(url);
+                
+                invoiceButton.disabled = false;
+                invoiceButton.textContent = "Download Invoice";
+            })
+            .catch((error) => {
+                
+                invoiceButton.disabled = false;
+                invoiceButton.textContent = "Download Invoice";
+                console.error("An error occurred:", error);
+            });
+    });
+</script>

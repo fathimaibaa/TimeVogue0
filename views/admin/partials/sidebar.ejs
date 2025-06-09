@@ -1,0 +1,131 @@
+<div class="screen-overlay"></div>
+<aside class="navbar-aside" id="offcanvas_aside">
+    <div class="aside-top">
+        <a href="/admin/dashboard" class="brand-wrap">
+            <img src="/assets/img/TIME.png" alt="Vogue Logo" style="width: 300px; height: 100pm start;">
+        </a>
+        <div>
+            <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+        </div>
+    </div>
+    <nav>
+        <ul class="menu-aside">
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/dashboard"  data-url="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/user" data-url="/admin/user"> <i class="icon material-icons md-person"></i>
+                    <span class="text">Users</span>
+                </a>
+                
+            </li>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/products" data-url="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
+                    <span class="text">Products</span>
+                </a>
+                
+            </li>
+
+           
+            <li class="menu-item">
+                <a class="menu-link" href="/admin/sales-report" data-url="/admin/sales-report"> <i class="icon material-icons md-comment"></i>
+                    <span class="text">Sales</span>
+                </a>
+            </li>
+
+              
+
+
+            <li class="menu-item">
+                <a class="menu-link" href="/admin/orders" data-url="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
+                    <span class="text">Orders</span>
+                </a>
+              
+
+                
+                </li>
+
+
+            </li>
+            <li class="menu-item">
+                <a class="menu-link" href="/admin/category" data-url="/admin/category"> <i class="fa fa-list-alt"></i>
+                    <span class="text pl-3">Category</span>
+                </a>
+               
+            </li>
+            <li class="menu-item">
+                <a class="menu-link" href="/admin/product/addProduct" data-url="/admin/product/addProduct" style="text-decoration: none; "> <i class="icon material-icons md-add_box"></i>
+                    <span class="text">Add product</span>
+                </a>
+
+            </li>
+            
+            <li class="menu-item">
+                <a class="menu-link" href="/admin/coupons/" data-url="/admin/coupons/"> <i class="icon material-icons md-comment"></i>
+                    <span class="text">Coupons</span>
+                </a>
+            </li>
+
+
+              <li class="menu-item ">
+                <a class="menu-link" href="/admin/coupon/add/" data-url="/admin/coupon/add/"> <i class="icon material-icons md-monetization_on"></i>
+                    <span class="text">Add Coupons</span>
+                </a>
+                
+            </li>
+
+
+
+        </ul>
+        <br>
+        <br>
+    </nav>
+</aside>
+<style>
+.fa-list-alt{
+    color: #a6abb0;
+}
+.text{
+    color: black;
+    font-weight: 400;
+}
+.menu-item{
+text-decoration: none;
+}
+a {
+ 
+  text-decoration: none !important;
+
+}
+.logo-img{
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.menu-item.active {
+    background-color:#f6f7f8; 
+    color: #0000; 
+}
+
+
+</style>
+
+<script>
+    var path = window.location.pathname;
+
+
+    var menuLinks = document.querySelectorAll('.menu-link');
+
+   
+    menuLinks.forEach(function (menuLink) {
+        var href = menuLink.getAttribute('data-url');
+
+        
+        if (path === href) {
+            
+            menuLink.parentElement.classList.add('active');
+        }
+    });
+</script>

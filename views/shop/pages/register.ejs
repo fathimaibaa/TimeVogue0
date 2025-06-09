@@ -1,0 +1,91 @@
+
+
+<div class="register-area ptb-100">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-12 col-lg-12 col-xl-6 ms-auto me-auto">
+                <div class="login bg-light">
+                    <div class="login-form-container">
+                        <% if (typeof message !== 'undefined') { %>
+                            <div class="alert alert-success fade show mt-3" id="message" role="alert">
+                                <%= message %>
+                            </div>
+                        <% } %>
+                        
+        <div class="alert alert-danger fade show mt-3" id="error-message" role="alert" style="display: none;"></div>
+                        <div class="login-form">
+                          
+                            <form action="" method="post" onsubmit="return validateForm()">
+                              
+                                <input type="text" id="user-name" name="userName" placeholder="UserName"  required>
+                                <span id="name-error" class="error"></span>
+                               
+
+
+
+                                <input type="email" id="user-email" name="email" placeholder="Email"   required>
+                                <span id="email-error" class="error"></span> 
+
+                            
+                                <input type="password" id="user-password"name="password" placeholder="Password" required>
+                                <span id="password-error" class="error"></span>
+
+                                <input type="password" id="user-repassword" name="repeat-password" placeholder="Repeat Password" required>
+<span id="repassword-error" class="error"></span>
+
+                                <div class="button-box">
+                                    <button type="submit" class="default-btn floatright">Register</button>
+                                </div>
+
+                                <% if (typeof message !=='undefined' ) { %>
+                                    <div class="alert alert-success fade show mt-3" id="message" role="alert"">
+                                        <%= message %>
+                                    </div>
+                                    <% } %>
+                                    <div class="col-md-6">
+                                        <div class="mb-3 p-3 shadow rounded bg-light">
+                                            <label for="referralCode" class="form-label">Referral ID</label>
+                                            <div class="input-group">
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="referralCode"
+                                                    name="referralCode"
+                                                    value="<%= user?.referralId %>"
+                                                
+                                                />
+                                                <button class="btn btn-secondary" id="copyButton" onclick="copyReferralCode()">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                                        <path d="M5 1a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2h4a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h4zM1 5a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V5zm5-2H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm6 0a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h4a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-1a2 2 0 0 1-2-2z"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <div class="marquee-container mt-2">
+                                                <p class="text-success marquee">
+                                                    Invite a friend and earn 100 wallet cash.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+
+
+                            </div>
+
+
+                        </div>
+               
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/js/shop/registerValidation.js"></script>
+
+

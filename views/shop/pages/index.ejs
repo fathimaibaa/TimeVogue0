@@ -1,0 +1,153 @@
+       
+      
+       
+        <div class="banner-area pt-90 pb-160 fix">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <div class="furits-banner-wrapper mb-30 wow fadeInLeft">
+                            <img src="assets/img/banner/banner2.jpeg" alt="">
+                            <div class="furits-banner-content">
+                                <h4>Vintage Gold</h4>
+                                <p>"Timeless Elegance: Embrace the past with vintage watches, where each tick tells a story of craftsmanship and style."</p>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="furits-banner-wrapper mb-30 wow fadeInUp">
+                            <img src="assets/img/banner/banner1.jpeg" alt="">
+                            <div class="furits-banner-content">
+                                <h4>Titan Men</h4>
+                                <p>" A fusion of style and strength, where timekeeping meets unmatched elegance."</p>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="furits-banner-wrapper mb-30 wow fadeInRight">
+                            <img src="assets/img/banner/banner3.jpeg" alt="">
+                            <div class="furits-banner-content">
+                                <h4>Patek Philippe</h4>
+                                <p>"Luxury in Every Second:  where timeless beauty meets impeccable craftsmanship."</p>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <div class="product-area pt-115 pb-120">
+            <div class="pl-100 pr-100">
+                <div class="container-fluid">
+                    
+                    <div class="section-title text-center mb-60">
+                        <h2>New Arrivals</h2>
+                    </div>
+                    <div class="product-style">
+                        <div class="arrival-active owl-carousel">
+                            <% if (products.length>0) { %>
+                                <% products.forEach(element=> { %>
+                            <div class="product-wrapper">
+    
+                                        <% if (Array.isArray(element.images) && element.images.length> 0) { %>
+    
+    
+                                <div class="product-img">
+                                    
+                                    <a href="/viewProduct/<%= element._id %>">
+                                        <img src="<%= element.images[0].imageUrl %>" alt="">
+                                    </a>
+                                    <% } %>
+    
+                                    
+                                    <div class="product-action">
+                                        
+                                        <a class="animate-right" title="Quick View" href="/viewProduct/<%= element?._id %>">
+    
+                                            <i class="pe-7s-look"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <h4><b><a href="/viewProduct/<%= element._id%>">  <%= element.title %></a></b></h4>
+                                    
+                                    <p class="text-decoration-line-through">₹<%=
+                                        (element.productPrice).toLocaleString() %>
+                                </p>
+                                <h5>₹<%=( element.salePrice).toLocaleString() %>
+                                </h5>
+                                </div>
+                            </div>
+                            <% }); %>
+                            <% } else { %>
+                                <h2>No Products</h2>
+                                <% } %>
+    
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+       
+      
+        <div class="blog-area pt-130 pb-70">
+            <div class="container">
+                <div class="section-title-furits text-center mb-95">
+                    
+                    <h2>Timeless Elegance</h2>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="blog-wrapper mb-30 wow fadeInLeft">
+                            <div class="blog-img-2">
+                                <a href="blog-details.html"><img alt="" src="assets/img/blog/blog1.jpeg"></a>
+                            </div>
+                            <div class="blog-info-wrapper-2 text-center">
+                                
+                                <h3>CK Watches: A Fusion of Style and Precision. Elevate Your Wristwear with Iconic Calvin Klein Timepieces</h3>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="blog-wrapper mb-30 wow fadeInUp">
+                            <div class="blog-img-2">
+                                <a href="blog-details.html"><img alt="" src="assets/img/blog/blog3.jpeg"></a>
+                            </div>
+                            <div class="blog-info-wrapper-2 text-center">
+                                
+                                <h3>"DW Watches: A Perfect Blend of Classic Design and Modern Style."</h3>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="blog-wrapper mb-30 wow fadeInRight">
+                            <div class="blog-img-2">
+                                <a href="blog-details.html"><img alt="" src="assets/img/blog/blog2.jpeg"></a>
+                            </div>
+                            <div class="blog-info-wrapper-2 text-center">
+                               
+                                <h3>"RAGA Watches: A Blend of Tradition and Modern Elegance, Redefining Timekeeping."</h3>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+		
+		
+		
+		
+		
+		
+		
+		
+		

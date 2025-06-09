@@ -1,0 +1,37 @@
+
+      
+
+       
+       
+        <div class="register-area ptb-100">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12 col-12 col-lg-6 col-xl-6 ms-auto me-auto">
+                        <%- include('../partials/flash.ejs') %>
+                        <div class="login">
+                            <div class="login-form-container">
+                                <div class="login-form">
+                                    <form action="/login" method="post" id="loginForm">
+                                        <input type="email" name="email" placeholder="Email">
+                                        <p class="text-danger" id="emailError"></p>
+                                        <input type="password" name="password" placeholder="Password">
+                                        <p class="text-danger" id="passwordError"></p>
+                                        <div class="button-box">
+                                            <div class="login-toggle-btn">
+                                                
+                                                <a href="/forgetPassword">Forgot Password?</a>
+                                            </div>
+                                            <button type="submit" class="default-btn floatright">Login</button>
+                                            <a href="/register">Don't have an account ? Register now</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <script src="/assets/js/shop/loginValidation.js"></script>
