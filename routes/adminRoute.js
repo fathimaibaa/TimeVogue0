@@ -73,7 +73,7 @@ adminRoute.get('/product/addProduct', isAdminLoggedIn, productController.addProd
  
 adminRoute.post(
   '/product/addProduct',
-  upload1.array('images', 10),  // max 10 files, adjust as needed
+  upload.array('images', 10),  // max 10 files, adjust as needed
   productController.insertProduct
 );
 
