@@ -35,7 +35,7 @@ const verifyAdmin = expressHandler(async(req,res)=>{
             if(user){
                      res.render('./admin/pages/login',{adminCheck:'You are not an Admin',title:'Login'})
             }
-         if(email === email && req.body.password === password){
+         if(emailCheck === email && req.body.password === password){
               
               req.session.admin = email; 
               res.redirect('/admin/dashboard')
