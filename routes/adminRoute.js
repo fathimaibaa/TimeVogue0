@@ -31,10 +31,10 @@ const upload1 = multer({
     },
 });
 
-adminRoute.use((req, res, next) => {
-    req.app.set("layout", "admin/layouts");
-    next();
-});
+// adminRoute.use((req, res, next) => {
+//     req.app.set("layout", "admin/layouts");
+//     next();
+// });
 
 
 
@@ -73,7 +73,7 @@ adminRoute.get('/product/addProduct', isAdminLoggedIn, productController.addProd
  
 adminRoute.post(
   '/product/addProduct',
-  upload.array('images', 10),  // max 10 files, adjust as needed
+  upload1.array('images', 10),  // max 10 files, adjust as needed
   productController.insertProduct
 );
 

@@ -95,14 +95,12 @@ const dashboardpage = expressHandler(async (req, res) => {
             totalActiveUserCount,
             totalSalesAmount,
             moment,
-            totalSoldProducts: totalSoldProducts[0].total_sold_count,
+            totalSoldProducts: totalSoldProducts[0]?.total_sold_count ?? 0,  // <-- FIX HERE
         });
     } catch (error) {
         throw new Error(error);
     }
 });
-
-
 
 
 const userManagement = expressHandler(async(req,res)=>{

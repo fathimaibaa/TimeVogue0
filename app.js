@@ -79,7 +79,7 @@ app.use((req, res, next) => {
 
 
 app.use(express.static("public"));
-app.use("/admin", express.static(__dirname + "public/admin"));
+app.use("/admin", express.static(__dirname + "/public/admin"));
 
 app.use(expressLayouts)
 app.set('view engine', 'ejs');
