@@ -1,46 +1,37 @@
-<div class="container mt-4">
+
+<div class="container mt-4 ">
     <h1>Add Category</h1>
-
-    <% if (error) { %>
-      <div class="alert alert-danger fade show mt-3" role="alert">
-        <%= error %>
-      </div>
-    <% } %>
-
-    <% if (catCheck) { %>
-      <div class="alert alert-danger fade show mt-3" id="message" role="alert">
-        <%= catCheck %>
-      </div>
-    <% } %>
-
-    <% if (message) { %>
-      <div class="alert alert-success fade show mt-3" id="message" role="alert">
-        <%= message %>
-      </div>
-    <% } %>
 
     <form action="" method="post">
         <div class="form-group col-lg-6">
             <label for="categoryName">Category Name</label>
-            <input 
-                type="text" 
-                class="form-control" 
-                name="addCategory" 
-                id="categoryName"  
-                placeholder="Enter category name" 
-                required 
-            >
+            <input type="text" class="form-control" name="addCategory" id="categoryName"  placeholder="Enter category name" required>
         </div>
 
         <button type="submit" class="btn btn-primary">Add Category</button>
     </form>
 </div>
 
+
+<% if(typeof message !=='undefined') { %>
+    <div class="alert alert-success fade show mt-3" id="message" role="alert">
+        <%- message %>
+    </div>
+<% } %>
+
+<% if(typeof catCheck !=='undefined') { %>
+    <div class="alert alert-danger fade show mt-3" id="message" role="alert">
+        <%- catCheck %>
+    </div>
+<% } %>
+
 <script>
   const message = document.getElementById('message');
-  if (message) {
-    setTimeout(() => {
-      message.style.display = 'none';
-    }, 3000);
-  }
+
+const hide = () => {
+    message.style.display = 'none';
+}
+
+setTimeout(hide, 3000);
+
 </script>
