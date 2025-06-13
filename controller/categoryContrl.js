@@ -13,6 +13,16 @@ const categoryManagement = expressHandler(async (req, res) => {
 })
 
 
+const addCategory = expressHandler(async (req, res) => {
+    try {
+        const messages = req.flash();
+        res.render('./admin/pages/addCategory', { title: 'addCategory',messages })
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+
+
 const insertCategory = expressHandler(async (req, res) => {
     try {
         let categoryName = req.body.addCategory?.trim();
