@@ -13,37 +13,54 @@ const categoryManagement = expressHandler(async (req, res) => {
 })
 
 
-const addCategory = expressHandler(async (req, res) => {
-    try {
-        const messages = req.flash();
-        res.render('./admin/pages/addCategory', { title: 'addCategory',messages })
-    } catch (error) {
-        throw new Error(error)
-    }
-})
-
-
 const insertCategory = expressHandler(async (req, res) => {
     try {
-        
-        const categoryName = req.body.addCategory;
+        let categoryName = req.body.addCategory?.trim();
+
+        // 1. Empty check
+        if (!categoryName) {
+            return res.render('./admin/pages/addCategory', {
+                error: "Category name is required.",
+                title: 'addCategory'
+            });
+        }
+
+        // 2. Length check
+        if (categoryName.length < 3 || categoryName.length > 30) {
+            return res.render('./admin/pages/addCategory', {
+                error: "Category name must be between 3 and 30 characters.",
+                title: 'addCategory'
+            });
+        }
+
+        // 3. Alphabet check (if needed)
+        const validName = /^[a-zA-Z\s]+$/.test(categoryName);
+        if (!validName) {
+            return res.render('./admin/pages/addCategory', {
+                error: "Category name must contain only letters and spaces.",
+                title: 'addCategory'
+            });
+        }
+
+        // 4. Check for duplicates (case-insensitive)
         const regexCategoryName = new RegExp(`^${categoryName}$`, 'i');
         const findCat = await category.findOne({ categoryName: regexCategoryName });
 
         if (findCat) {
-            const catCheck = `Category ${categoryName} Already existing`;
-            res.render('./admin/pages/addCategory', { catCheck, title: 'addCategory' });
-        } else {
-            const result = new category({
-                categoryName: categoryName,
-            });
-            await result.save();
-
-            res.render('./admin/pages/addCategory', {
-                message: `Category ${categoryName} added successfully`,
-                title: 'addCategory',
+            return res.render('./admin/pages/addCategory', {
+                catCheck: `Category "${categoryName}" already exists.`,
+                title: 'addCategory'
             });
         }
+
+        // 5. Save
+        const result = new category({ categoryName });
+        await result.save();
+
+        return res.render('./admin/pages/addCategory', {
+            message: `Category "${categoryName}" added successfully.`,
+            title: 'addCategory'
+        });
 
     } catch (error) {
         throw new Error(error);
