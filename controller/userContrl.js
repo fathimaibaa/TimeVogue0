@@ -531,38 +531,31 @@ const shopping = asyncHandler(async (req, res) => {
 
 
 const viewProduct = asyncHandler(async (req, res) => {
-    try {
-        const id = req.params.id
-        const user = req.user
-       
-        const findProduct = await Product.findOne({ _id: id }).populate('categoryName').populate('images').exec()
-       
+  const id = req.params.id;
+  const user = req.user;
 
-        if (!findProduct) {
-            return res.status(404).render('./shop/pages/page404')
-        }
+  const findProduct = await Product.findOne({ _id: id })
+    .populate('categoryName')
+    .populate('images'); // removed .exec()
 
-        const products = await Product.find({ isListed: true }).populate('images').limit(3)
+  if (!findProduct) {
+    return res.status(404).render('./shop/pages/page404');
+  }
 
-        let cartProductIds;
-        if (user) {
-         cartProductIds = user.cart.map(cartItem => cartItem.product.toString());
-        } else {
-            cartProductIds = null;
+  const products = await Product.find({ isListed: true }).populate('images').limit(3);
 
-        }
-        let wishlist = false
-        if (user) {
-            wishlist = user.wishlist;
-        }
-       
-        res.render('./shop/pages/productDetail', { product: findProduct, products: products ,cartProductIds,wishlist,
-            })
-    } 
-    catch (error) {
-        throw new Error(error)
-    }
-})
+  const cartProductIds = user ? user.cart.map(c => c.product.toString()) : null;
+  const wishlist = user ? user.wishlist : false;
+
+console.log("Populated Images:", findProduct.images);
+
+  res.render('./shop/pages/productDetail', {
+    product: findProduct,
+    products,
+    cartProductIds,
+    wishlist,
+  });
+});
 
 
 

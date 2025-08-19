@@ -12,10 +12,11 @@
                             <tr>
                                 <th>Code</th>
                                 <th>Coupon Type</th>
-                                <th>Coupon Amount</th>
+                                <th>Coupon Value (₹ / %)</th>
+
                                 <th>Description</th>
-                                <th>Min Amount</th>
-                                <th>Max Amount</th>
+                                <th>Min Amount Of Purchase</th>
+                                <th>Max Amount of Discount</th>
                                 <th>Expiry Date</th>
                                 <th>Actions</th>
                             </tr>
@@ -25,7 +26,14 @@
                             <tr>
                                 <td class="text-center"><%= coupon?.code %></td>
                                 <td class="text-center"><%= coupon?.type.toUpperCase() %></td>
-                                <td class="text-center"><%= coupon?.value %></td>
+                               <td class="text-center">
+  <% if (coupon?.type === 'percentage') { %>
+    <%= coupon?.value %>%
+  <% } else { %>
+    ₹<%= coupon?.value %>
+  <% } %>
+</td>
+
                                 <td class="text-center"><%= coupon?.description %></td>
                                 <td class="text-center"><%= coupon?.minAmount %></td>
                                 <td class="text-center"><%= coupon?.maxAmount %></td>

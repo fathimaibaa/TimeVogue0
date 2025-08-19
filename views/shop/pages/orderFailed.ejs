@@ -1,0 +1,90 @@
+<style>
+  .failure-widget {
+    max-width: 420px;
+    margin: 40px auto;
+    background: linear-gradient(135deg, #ffe6e9, #ffd1d6);
+    border-radius: 18px;
+    box-shadow: 0 12px 25px rgba(255, 105, 114, 0.3);
+    padding: 40px 35px 35px;
+    color: #8b1c25;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    position: relative;
+    user-select: none;
+  }
+
+  .failure-widget .icon-circle {
+    width: 88px;
+    height: 88px;
+    background-color: #f9c6c9;
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #f37175;
+    box-shadow: 0 6px 12px rgba(243, 113, 117, 0.5);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  .failure-widget .icon-circle svg {
+    width: 44px;
+    height: 44px;
+    stroke: #8b1c25;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .failure-widget h2 {
+    font-size: 2.3rem;
+    margin-bottom: 16px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    text-shadow: 1px 1px 3px rgba(139, 28, 37, 0.3);
+  }
+
+  .failure-widget p {
+    font-size: 1.15rem;
+    margin: 8px 0;
+    line-height: 1.5;
+    font-weight: 500;
+    color: #5f131b;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 6px 12px rgba(243, 113, 117, 0.5);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 10px 20px rgba(243, 113, 117, 0.75);
+      transform: scale(1.08);
+    }
+  }
+</style>
+
+<div class="failure-widget" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="icon-circle" aria-label="Payment Failed Icon">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </div>
+
+  <h2>Payment Failed</h2>
+
+  <% if (order) { %>
+    <p><strong>Order ID:</strong> <%= order.orderId %></p>
+    <p><strong>Total Price:</strong> ₹<%= order.totalPrice %></p>
+    <p>You will be redirected to the checkout page shortly...</p>
+  <% } else { %>
+    <p>No order was created. Please try again.</p>
+  <% } %>
+</div>
+
+<script>
+  setTimeout(() => {
+    window.location.href = '/checkout';
+  }, 2000);
+</script>

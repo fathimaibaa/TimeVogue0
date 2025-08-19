@@ -255,25 +255,34 @@ exports.getCartData = asyncHandler(async (req, res) => {
 
 exports.verifyPayment = asyncHandler(async (req, res) => {
     try {
-        const { razorpay_payment_id, razorpay_order_id, razorpay_signature, orderId, walletAmount, userId } = req.body;
-        const result = await checkoutHelper.verifyPayment(
+        const {
             razorpay_payment_id,
             razorpay_order_id,
             razorpay_signature,
-            orderId
-        );
-       
+            orderId,
+            walletAmount,
+            userId
+        } = req.body;
 
-        if (result) {
-            const wallet = await Wallet.findOneAndUpdate(
-                { user: userId },
-                {
-                    balance: walletAmount,
-                }
+        try {
+            const result = await checkoutHelper.verifyPayment(
+                razorpay_payment_id,
+                razorpay_order_id,
+                razorpay_signature,
+                orderId
             );
-        }
 
-        res.json(result);
+            if (result) {
+                await Wallet.findOneAndUpdate(
+                    { user: userId },
+                    { balance: walletAmount }
+                );
+                return res.json(result); // success
+            }
+        } catch (err) {
+            // Razorpay signature verification failed
+            return res.redirect(`/order-failed/${orderId}`);
+        }
     } catch (error) {
         throw new Error(error);
     }
@@ -376,4 +385,34 @@ exports.updateCoupon = asyncHandler(async (req, res) => {
 exports.removeAppliedCoupon = asyncHandler(async (req, res) => {
     req.session.coupon = null;
     res.status(200).json("Ok");
+});
+
+
+
+exports.orderFailed = asyncHandler(async (req, res) => {
+    try {
+        const orderId = req.params.id;
+
+        const order = await Order.findById(orderId).populate({
+            path: "orderItems",
+            populate: { path: "product" }
+        });
+
+        // If order not found (maybe it never saved), just show a blank failure page
+        if (!order) {
+            return res.render("shop/pages/orderFailed", {
+                title: "Order Failed",
+                page: "Order Failed",
+                order: null
+            });
+        }
+
+        res.render("shop/pages/orderFailed", {
+            title: "Order Failed",
+            page: "Order Failed",
+            order
+        });
+    } catch (err) {
+        throw new Error(err);
+    }
 });

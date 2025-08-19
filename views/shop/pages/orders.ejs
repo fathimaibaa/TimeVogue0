@@ -1,75 +1,225 @@
-<div class="container mt-4">
-    <h2>My Orders</h2>
-    <ul class="list-group mt-5 col-md-10">
-        <% if (orders && orders.length) { %>
+<style>
+  body {
+    background-color: #f9f9f9;
+    color: #222;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
 
-            <% 
-                // Create a map to group orders by order ID
-                const orderMap = new Map();
-                orders.forEach(order => {
-                    const orderId = order.orderId;
-                    if (!orderMap.has(orderId)) {
-                        orderMap.set(orderId, [order]);
-                    } else {
-                        orderMap.get(orderId).push(order);
-                    }
-                });
+  .orders-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
 
-                // Iterate through the map and display grouped orders
-                orderMap.forEach(ordersGroup => {
-            %>
+  .orders-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    color: #111;
+  }
 
-            <li class="list-group-item">
-                <div class="row d-flex justify-content-center">
-                    <div class="col-md-10">
-                        <h4 class="card-text text-center">Order Number: <%= ordersGroup[0].orderId %></h4>
-                        <div class="row">
-                            <% ordersGroup.forEach(order => { %>
-                                <% order.orderItems.forEach(orderItem => { %>
-                                    <div class="col-md-4 align-self-center">
-                                        <a href="/viewProduct/<%= orderItem.product._id %>">
-                                            <img
-                                                class="img-fluid img-thumbnail"
-                                                src="<%= orderItem.product.images[0].thumbnailUrl %>"
-                                                alt="Card image cap"
-                                                style="height: 200px; width: 200px"
-                                            />
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="card-body text-start">
-                                            <p class="card-text">
-                                                Order Status: <% if (orderItem.status === 'Pending') { %>
-                                                    <strong class="text-warning"><%= orderItem.status %></strong>
-                                                <% } else if (orderItem.status === 'Shipped') { %>
-                                                    <strong class="text-primary"><%= orderItem.status %></strong>
-                                                <% } else if (orderItem.status === 'Cancelled' ) { %>
-                                                    <strong class="text-danger"><%= orderItem.status %></strong>
-                                                <% } else if (orderItem.status === 'Delivered') { %>
-                                                    <strong class="text-success"><%= orderItem.status %></strong>
-                                                <% } else if (orderItem.status === 'Returned') { %>
-                                                    <strong class="text-info"><%= orderItem.status %></strong>
-                                                <% } %>
-                                            </p>
-                                            <p class="card-text">
-                                                Product Name: <strong class="text-dark"><%= orderItem.product.title %></strong>
-                                            </p>
-                                            <a href="/orders/<%= orderItem._id %>" class="btn btn-dark h-auto">View Order</a>
-                                        </div>
-                                    </div>
-                                <% }) %>
-                            <% }) %>
-                        </div>
-                    </div>
+  ul.orders-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  li.order-item {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    margin-bottom: 1.8rem;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+  }
+
+  .order-number {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #111;
+    letter-spacing: 1px;
+  }
+
+  .order-products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .product-card {
+    background-color: #fafafa;
+    border-radius: 10px;
+    flex: 1 1 45%;
+    display: flex;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .product-card:hover {
+    box-shadow: 0 6px 14px rgb(0 0 0 / 0.12);
+  }
+
+  .product-img-container {
+    flex-shrink: 0;
+    width: 180px;
+    height: 180px;
+    overflow: hidden;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-color: #eee;
+  }
+
+  .product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .product-card:hover .product-img {
+    transform: scale(1.05);
+  }
+
+  .product-info {
+    padding: 1rem 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #222;
+  }
+
+  .product-info p {
+    margin: 0.3rem 0;
+    font-size: 1rem;
+  }
+
+  .status {
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .status.Pending {
+    background-color: #e1a100; /* amber/dark yellow */
+  }
+
+  .status.Shipped {
+    background-color: #444444; /* dark gray */
+  }
+
+  .status.Cancelled {
+    background-color: #c0392b; /* strong red */
+  }
+
+  .status.Delivered {
+    background-color: #27ae60; /* dark green */
+  }
+
+  .status.Returned {
+    background-color: #2980b9; /* subtle blue but you can change */
+  }
+
+  .btn-view-order {
+    margin-top: 1rem;
+    align-self: flex-start;
+    background-color: #222;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-view-order:hover {
+    background-color: #555;
+  }
+
+  @media (max-width: 600px) {
+    .order-products {
+      flex-direction: column;
+    }
+    .product-card {
+      flex: 1 1 100%;
+    }
+    .product-img-container {
+      width: 100%;
+      height: 250px;
+      border-radius: 10px 10px 0 0;
+    }
+    .product-img {
+      border-radius: 10px 10px 0 0;
+    }
+    .product-info {
+      padding: 1rem;
+    }
+  }
+</style>
+
+<div class="orders-container">
+  <h2>My Orders</h2>
+  <ul class="orders-list">
+    <% if (orders && orders.length) { %>
+      <% 
+        const orderMap = new Map();
+        orders.forEach(order => {
+          const orderId = order.orderId;
+          if (!orderMap.has(orderId)) {
+            orderMap.set(orderId, [order]);
+          } else {
+            orderMap.get(orderId).push(order);
+          }
+        });
+        orderMap.forEach(ordersGroup => {
+      %>
+
+      <li class="order-item">
+        <div class="order-number">Order Number: <%= ordersGroup[0].orderId %></div>
+        <div class="order-products">
+          <% ordersGroup.forEach(order => { %>
+            <% order.orderItems.forEach(orderItem => { %>
+              <div class="product-card">
+                <a href="/viewProduct/<%= orderItem.product._id %>" class="product-img-container">
+                  <% if (orderItem.product.images && orderItem.product.images.length > 0) { %>
+                    <img
+                      src="/<%= orderItem.product.images[0].thumbnailUrl %>"
+                      alt="Product Image"
+                      class="product-img"
+                    />
+                  <% } else { %>
+                    <img
+                      src="/images/default-image.jpg"
+                      alt="No Image"
+                      class="product-img"
+                    />
+                  <% } %>
+                </a>
+                <div class="product-info">
+                  <p>Order Status: 
+                    <span class="status <%= orderItem.status %>"><%= orderItem.status %></span>
+                  </p>
+                  <p>Product Name: <strong><%= orderItem.product.title %></strong></p>
+                  <a href="/orders/<%= orderItem._id %>" class="btn-view-order">View Order</a>
                 </div>
-            </li>
+              </div>
+            <% }) %>
+          <% }) %>
+        </div>
+      </li>
 
-            <% 
-                });
-            %>
-
-        <% } else { %>
-            <li class="list-group-item">No Orders</li>
-        <% } %>
-    </ul>
+      <% }); %>
+    <% } else { %>
+      <li class="order-item" style="text-align:center; font-size: 1.2rem;">No Orders</li>
+    <% } %>
+  </ul>
 </div>

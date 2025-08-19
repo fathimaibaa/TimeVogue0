@@ -8,12 +8,20 @@
                     <div class="row no-gutters">
                       
                         <div class="col-md-4 d-flex align-items-center justify-content-center">
-                            <img
-                                src="<%= order.product.images[0].imageUrl %>"
-                                class="card-img"
-                                alt="Product Image"
-                                style="border: 1px solid #fff;"
-                            />
+                            <!-- <pre><%= JSON.stringify(order.product.images, null, 2) %></pre> -->
+<% if (order.product.images && order.product.images.length > 0) { %>
+ <img 
+  src="/<%= order.product.images[0].thumbnailUrl %>" 
+  alt="Product Image" 
+  class="img-thumbnail"
+  style="width: 150px; height: 150px; object-fit: cover;"
+/>
+
+<% } else { %>
+  <p>No image found</p>
+<% } %>
+
+
                         </div>
                         
 

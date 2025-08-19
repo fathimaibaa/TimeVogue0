@@ -129,33 +129,50 @@
     }
 
     function addGrandTotalRow(table, data) {
-        const grandTotal = data.reduce((total, item) => total + item.totalPrice, 0);
-        const tfoot = document.createElement("tfoot");
-        const row = document.createElement("tr");
+    const grandTotal = data.reduce((total, item) => total + item.totalPrice, 0);
+    const tfoot = document.createElement("tfoot");
+    const row = document.createElement("tr");
+
+    const totalColumns = table.querySelector("thead tr").children.length;
+
+    for (let i = 0; i < totalColumns; i++) {
         const cell = document.createElement("td");
-        cell.colSpan = Object.keys(data[0]).length;
-        cell.textContent = `Grand Total: ₹${grandTotal}`;
         cell.style.textAlign = "center";
+        if (i === 1) {
+            cell.textContent = `Grand Total: ₹${grandTotal.toFixed(2)}`;
+            cell.colSpan = 1; // You can change colspan if you want it to span more columns
+            cell.style.fontWeight = "bold";
+        } else {
+            cell.textContent = "";
+        }
         row.appendChild(cell);
-        tfoot.appendChild(row);
-        table.appendChild(tfoot);
     }
 
-    document.getElementById("pdfBtn").addEventListener("click", function () {
-        const pdf = new jsPDF({
-            orientation: "landscape",
-        });
-        const divContent = document.getElementById("table");
-        pdf.fromHTML(divContent, 15, 15);
-        pdf.save(`sales-report-${fromDate.value}-${toDate.value}.pdf`);
-    });
+    tfoot.appendChild(row);
+    table.appendChild(tfoot);
+}
 
-    document.getElementById("excelBtn").addEventListener("click", function () {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.table_to_sheet(document.getElementById("table"));
-        XLSX.utils.book_append_sheet(wb, ws, "Sales Report");
-        XLSX.writeFile(wb, `sales-report-${fromDate.value}-${toDate.value}.xlsx`);
-    });
+
+    document.getElementById("pdfBtn").addEventListener("click", function () {
+    const pdf = new jsPDF({ orientation: "landscape" });
+    const divContent = document.getElementById("table");
+    const fromDate = document.getElementById("fromDate").value;
+    const toDate = document.getElementById("toDate").value;
+
+    pdf.fromHTML(divContent, 15, 15);
+    pdf.save(`sales-report-${fromDate}-${toDate}.pdf`);
+});
+
+document.getElementById("excelBtn").addEventListener("click", function () {
+    const fromDate = document.getElementById("fromDate").value;
+    const toDate = document.getElementById("toDate").value;
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.table_to_sheet(document.querySelector("#table table"));
+    XLSX.utils.book_append_sheet(wb, ws, "Sales Report");
+    XLSX.writeFile(wb, `sales-report-${fromDate}-${toDate}.xlsx`);
+});
+
 
     document.getElementById("exportBtn").addEventListener("click", () => {
         $("#exportOptionsModal").modal("show");

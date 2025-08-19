@@ -30,7 +30,9 @@
                                     <a class="<%= index === 0 ? 'active' : '' %> mb-10"
                                         href="#pro-details<%= index + 1 %>" data-bs-toggle="tab" role="tab"
                                         aria-selected="<%= index === 0 %>">
-                                        <img src="<%= image.thumbnailUrl %>" alt="">
+                                      <img src="/<%= image.imageUrl %>" alt="">
+
+
                                     </a>
                                     <% }); %>
                                         <% } %>
@@ -45,9 +47,12 @@
                                     <div class="tab-pane <%= index === 0 ? 'active show' : '' %> fade"
                                         id="pro-details<%= index + 1 %>" role="tabpanel">
                                         <div class="easyzoom easyzoom--overlay is-ready">
-                                            <a href="<%= image.imageUrl %>">
-                                                <img src="<%= image.imageUrl %>" alt="">
-                                            </a>
+                                           <a href="/<%= image.imageUrl %>">
+
+    <img src="/<%= image.imageUrl %>" alt="">
+
+</a>
+
                                         </div>
                                     </div>
                                     <% }); %>
@@ -206,9 +211,10 @@
                         <div class="card">
                             <% if (Array.isArray(element.images) && element.images.length> 0) { %>
                             <a href="/viewProduct/<%= element._id%>">
-                                <img class="card-img-top img-size"
-                                    src="<%= element.images[0].imageUrl %>"
-                                    alt="<%= element?.title %>">
+                               <img class="card-img-top img-size" src="/<%= element.images[0].imageUrl %>" alt="<%= element?.title %>">
+
+
+
                             </a>
                             <% }%>
                             <div class="card-body">

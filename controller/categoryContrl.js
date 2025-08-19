@@ -25,28 +25,48 @@ const addCategory = expressHandler(async (req, res) => {
 
 const insertCategory = expressHandler(async (req, res) => {
     try {
-        
-        const categoryName = req.body.addCategory;
+        const categoryName = req.body.addCategory?.trim();
+
+        if (!categoryName || categoryName.length < 2) {
+            return res.render('./admin/pages/addCategory', {
+                catCheck: 'Category name must be at least 2 characters long.',
+                title: 'addCategory'
+            });
+        }
+
+        // Optional: Only allow alphabets and spaces
+        const validName = /^[A-Za-z\s]+$/.test(categoryName);
+        if (!validName) {
+            return res.render('./admin/pages/addCategory', {
+                catCheck: 'Category name must contain only letters and spaces.',
+                title: 'addCategory'
+            });
+        }
+
         const regexCategoryName = new RegExp(`^${categoryName}$`, 'i');
         const findCat = await category.findOne({ categoryName: regexCategoryName });
 
         if (findCat) {
-            const catCheck = `Category ${categoryName} Already existing`;
-            res.render('./admin/pages/addCategory', { catCheck, title: 'addCategory' });
-        } else {
-            const result = new category({
-                categoryName: categoryName,
-            });
-            await result.save();
-
-            res.render('./admin/pages/addCategory', {
-                message: `Category ${categoryName} added successfully`,
-                title: 'addCategory',
+            return res.render('./admin/pages/addCategory', {
+                catCheck: `Category "${categoryName}" already exists.`,
+                title: 'addCategory'
             });
         }
 
+        const result = new category({ categoryName });
+        await result.save();
+
+        return res.render('./admin/pages/addCategory', {
+            message: `Category "${categoryName}" added successfully.`,
+            title: 'addCategory'
+        });
+
     } catch (error) {
-        throw new Error(error);
+        console.error(error);
+        res.status(500).render('./admin/pages/addCategory', {
+            catCheck: 'Something went wrong while adding category.',
+            title: 'addCategory'
+        });
     }
 });
 

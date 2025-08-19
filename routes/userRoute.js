@@ -143,6 +143,8 @@ userRoute.put("/orders/single/:id", orderController.cancelSingleOrder);
 
             
 userRoute.post("/checkout", checkoutController.checkoutpage);
+userRoute.get("/checkout", checkoutController.checkoutpage);
+
 userRoute.get("/checkout/get", checkoutController.getCartData);
 userRoute.post("/place-order", checkoutController.placeOrder);
 userRoute.get("/order-placed/:id", checkoutController.orderPlaced);
@@ -157,7 +159,7 @@ userRoute.get("/coupon/remove", checkoutController.removeAppliedCoupon);
 
 
 
-
+userRoute.get("/order-failed/:id", checkoutController.orderFailed);
 
 
 

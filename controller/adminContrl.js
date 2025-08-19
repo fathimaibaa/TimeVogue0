@@ -56,14 +56,23 @@ const dashboardpage = expressHandler(async (req, res) => {
         const messages = req.flash();
         const user = req?.user;
         const recentOrders = await Order.find()
-            .limit(5)
-            .populate({
-                path: "user",
-                select: "firstName lastName image",
-            })
-            .populate("orderItems")
-            .select("totalAmount orderedDate totalPrice")
-            .sort({ _id: -1 });
+  .limit(5)
+  .populate({
+    path: "user",
+    select: "firstName lastName image",
+  })
+  .populate({
+    path: "orderItems",
+    populate: {
+      path: "product",
+      populate: {
+        path: "images",
+      },
+    },
+  })
+  .select("totalAmount orderedDate totalPrice orderItems")
+  .sort({ _id: -1 });
+
 
         let totalSalesAmount = 0;
         recentOrders.forEach((order) => {
@@ -208,27 +217,27 @@ const logout = (req, res)=>{
 
 
 const editOrder = expressHandler(async (req, res) => {
-   
-
     try {
         const orderId = req.params.id;
+
         const order = await Order.findOne({ orderId: orderId })
             .populate({
                 path: "orderItems",
-                modal: "OrderItems",
+                model: "OrderItem", // ✅ FIXED HERE
                 populate: {
                     path: "product",
-                    modal: "Product",
+                    model: "Product",
                     populate: {
                         path: "images",
-                        modal: "Images",
+                        model: "Images",
                     },
                 },
             })
             .populate({
                 path: "user",
-                modal: "User",
+                model: "User",
             });
+
         res.render("admin/pages/editOrder", { title: "Edit Order", order });
     } catch (error) {
         throw new Error(error);
@@ -243,7 +252,8 @@ const updateOrderStatuss = expressHandler(async (req, res) => {
    
    const newStatus = req.body.status
         
-        const order = await OrderItem.findByIdAndUpdate(orderId, { status: newStatus })
+        const order = await OrderItem.findByIdAndUpdate(orderId, { status: newStatus }, { new: true });
+
         if (req.body.status === status.shipped) {
             order.shippedDate = Date.now();
         } else if (req.body.status === status.delivered) {

@@ -96,146 +96,133 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const submitForm = document.getElementById("submitForm");
+
         const typeInput = document.getElementById("type");
         const valueInput = document.getElementById("value");
         const expiryDateInput = document.getElementById("expiryDate");
         const minAmountInput = document.getElementById("minAmount");
         const maxAmountInput = document.getElementById("maxAmount");
         const descriptionInput = document.getElementById("description");
-        const submitForm = document.getElementById("couponForm");
+        const codeInput = document.getElementById("code");
 
-        let isValid = false;
+        const typeError = document.getElementById("typeError");
+        const valueError = document.getElementById("valueError");
+        const expiryDateError = document.getElementById("expiryDateError");
+        const minAmountError = document.getElementById("minAmountError");
+        const maxAmountError = document.getElementById("maxAmountError");
+        const descriptionError = document.getElementById("descriptionError");
+        const formError = document.getElementById("formError");
 
-        typeInput.addEventListener("blur", validateType);
-        valueInput.addEventListener("blur", validateValue);
-        expiryDateInput.addEventListener("blur", validateExpiryDate);
-        minAmountInput.addEventListener("blur", validateMinAmount);
-        maxAmountInput.addEventListener("blur", validateMaxAmount);
-        descriptionInput.addEventListener("blur", validateDescription);
+        let isValid = true;
+
+        function generateCouponCode() {
+            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let code = "";
+            for (let i = 0; i < 8; i++) {
+                code += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            codeInput.value = code;
+
+            const selectedType = typeInput.value;
+            if (selectedType === "percentage") {
+                maxAmountInput.disabled = false;
+            } else {
+                maxAmountInput.disabled = true;
+                maxAmountInput.value = "";
+                maxAmountError.textContent = "";
+            }
+        }
 
         function validateType() {
-            const typeError = document.getElementById("typeError");
-            typeError.innerText = "";
-            const selectedType = typeInput.value;
-            if (selectedType === "") {
-                typeError.innerText = "Coupon Type is required.";
+            const type = typeInput.value.trim();
+            if (!type) {
+                typeError.textContent = "Coupon Type is required";
                 isValid = false;
             } else {
-                typeError.innerText = "";
+                typeError.textContent = "";
             }
-            isValid = true;
         }
 
         function validateValue() {
-            const valueError = document.getElementById("valueError");
-            valueError.innerText = "";
-            const value = valueInput.value;
-            if (value === "") {
-                valueError.innerText = "Discount Value is required.";
-                isValid = false;
-            } else if (isNaN(value)) {
-                valueError.innerText = "Discount Value must be a number.";
-                isValid = false;
-            } else if (value <= 0) {
-                valueError.innerText = "Discount Value must be a posative number";
+            const value = valueInput.value.trim();
+            if (!value || parseFloat(value) <= 0) {
+                valueError.textContent = "Coupon Value is required and must be greater than 0";
                 isValid = false;
             } else {
-                valueError.innerText = "";
-                generateCouponCode();
+                valueError.textContent = "";
             }
-            isValid = true;
-        }
-
-        function generateCouponCode() {
-            const typeInput = document.getElementById("type");
-            const valueInput = document.getElementById("value");
-            const codeInput = document.getElementById("code");
-
-            const selectedType = typeInput.value;
-            const discountValue = valueInput.value;
-
-            let couponCode = "";
-
-            if (selectedType === "percentage") {
-                couponCode = "PERCENT" + discountValue;
-            } else if (selectedType === "fixedAmount") {
-                couponCode = "FLAT" + discountValue;
-            }
-
-            codeInput.value = couponCode;
         }
 
         function validateExpiryDate() {
-            const expiryDateError = document.getElementById("expiryDateError");
-            expiryDateError.innerText = "";
-            const expiryDate = new Date(expiryDateInput.value);
-            const currentDate = new Date();
-           
-            if (expiryDate.value === "") {
-                expiryDate.innerText = "Expiry Date is Required";
-            } else if (isNaN(expiryDate.getTime()) || expiryDate < currentDate) {
-                expiryDateError.innerText = "Expiry Date must be a future date.";
+            const expiry = expiryDateInput.value;
+            if (!expiry) {
+                expiryDateError.textContent = "Expiry Date is required";
                 isValid = false;
             } else {
-                expiryDateError.innerText = "";
+                expiryDateError.textContent = "";
             }
-            isValid = true;
         }
 
         function validateMinAmount() {
-            const minAmountError = document.getElementById("minAmountError");
-            minAmountError.innerText = "";
-            const minAmount = minAmountInput.value;
-            if (minAmount === "") {
-                minAmountError.innerText = "Minimum Purchase Amount is required.";
-                isValid = false;
-            } else if (minAmount < 0) {
-                minAmountError.innerText = "Minumum Purchase Amount must be a posative number";
+            const minAmount = minAmountInput.value.trim();
+            if (!minAmount || parseFloat(minAmount) <= 0) {
+                minAmountError.textContent = "Minimum Purchase Amount is required and must be greater than 0";
                 isValid = false;
             } else {
-                minAmountError.innerText = "";
+                minAmountError.textContent = "";
             }
-            isValid = true;
         }
 
         function validateMaxAmount() {
-            const maxAmountError = document.getElementById("maxAmountError");
-            maxAmountError.innerText = "";
-            const maxAmount = maxAmountInput.value;
-            const selectedType = typeInput.value;
-            if (selectedType === "percentage" && maxAmount === "") {
-                maxAmountError.innerText = "Maximum Discount Amount is required for percentage coupons.";
-                isValid = false;
-            } else if (maxAmount < 0) {
-                maxAmountError.innerText = "Maximum Discount Amount Must be a posative number";
-                isValid = false;
+            const type = typeInput.value;
+            const maxAmount = maxAmountInput.value.trim();
+
+            if (type === "percentage") {
+                if (!maxAmount || parseFloat(maxAmount) <= 0) {
+                    maxAmountError.textContent = "Maximum Discount Amount is required for percentage type and must be greater than 0";
+                    isValid = false;
+                } else {
+                    maxAmountError.textContent = "";
+                }
             } else {
-                maxAmountError.innerText = "";
+                maxAmountError.textContent = "";
             }
-            isValid = true;
         }
 
         function validateDescription() {
-            const descriptionError = document.getElementById("descriptionError");
-            descriptionError.innerText = "";
-            const description = descriptionInput.value;
-            if (description === "") {
-                descriptionError.innerText = "Description is Required";
+            const description = descriptionInput.value.trim();
+            if (!description) {
+                descriptionError.textContent = "Coupon Description is required";
                 isValid = false;
             } else {
-                descriptionError.innerText = "";
+                descriptionError.textContent = "";
             }
-            isValid = true;
         }
 
+        // Regenerate coupon code and validate maxAmount on type change
+        typeInput.addEventListener("change", () => {
+            generateCouponCode();
+            validateMaxAmount();
+        });
+
+        // Final form submit
         submitForm.addEventListener("submit", (e) => {
             e.preventDefault();
-           
+            isValid = true;
+
+            validateType();
+            validateValue();
+            validateExpiryDate();
+            validateMinAmount();
+            validateMaxAmount();
+            validateDescription();
+
             if (isValid) {
+                formError.textContent = "";
                 submitForm.submit();
             } else {
-                const formError = document.getElementById("formError");
-                formError.textContent = "Please fill in all required fields";
+                formError.textContent = "Please fix the errors above before submitting.";
             }
         });
     });

@@ -426,77 +426,80 @@
             window.location.href = `/order-placed/${responseData.orderId}`;
         }
 
-        function handleRzpPayment(responseData) {
-           
-            const options = {
-                key: "rzp_test_DCRfI7P2Uw60Uo",
-                amount: responseData.order.totalPrice * 100,
-                currency: "INR",
-                name: "TimeVogue",
-                description: "Test Transaction",
-                image: "/assets/img/TIME.png",
-                order_id: responseData.order.id,
-                handler: function (response) {
-                    handleSuccessPayment(response, responseData);
-                },
-                prefill: {
-                    name: responseData.user.firstName,
-                    email: responseData.user.email,
-                    contact: responseData.user.mobile,
-                },
-                notes: {
-                    address: "Razorpay Corporate Office",
-                },
-                theme: {
-                    color: "#000000",
-                },
-                modal: {
-                    ondismiss: function () {
-                        handlePaymentFailure(responseData.orderId);
-                    },
-                },
-            };
+       function handleRzpPayment(responseData) {
+    const orderId = responseData.orderId || responseData.order.id; // ensure we have the correct ID
 
-            const rzp1 = new Razorpay(options);
+    const options = {
+        key: "rzp_test_DCRfI7P2Uw60Uo",
+        amount: responseData.order.totalPrice * 100,
+        currency: "INR",
+        name: "TimeVogue",
+        description: "Test Transaction",
+        image: "/assets/img/TIME.png",
+        order_id: responseData.order.id,
+        handler: function (response) {
+            handleSuccessPayment(response, responseData);
+        },
+        prefill: {
+            name: responseData.user.firstName,
+            email: responseData.user.email,
+            contact: responseData.user.mobile,
+        },
+        notes: {
+            address: "Razorpay Corporate Office",
+        },
+        theme: {
+            color: "#000000",
+        },
+        modal: {
+            ondismiss: function () {
+                // If payment modal closed without completing
+                window.location.href = `/order-failed/${orderId}`;
+            },
+        },
+    };
 
-            rzp1.on("payment.failed", function (response) {
-                handlePaymentFailure(responseData.orderId);
-            });
+    const rzp1 = new Razorpay(options);
 
-            rzp1.open();
-        }
+    rzp1.on("payment.failed", function (response) {
+        window.location.href = `/order-failed/${orderId}`;
+    });
 
-        function handleSuccessPayment(response, responseData) {
-            const postData = {
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-                orderId: responseData.orderId,
-                userId: responseData.user._id,
-                walletAmount: response.walletamount,
-            };
+    rzp1.open();
+}
 
-            fetch(`/verify-payment`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(postData),
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error("Error fetching data");
-                    }
-                })
-                .then((data) => {
-                    window.location.href = `/order-placed/${data.orderId}`;
-                })
-                .catch((error) => {
-                    handleError(error);
-                });
-        }
+function handleSuccessPayment(response, responseData) {
+    const postData = {
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_signature: response.razorpay_signature,
+        orderId: responseData.orderId,
+        userId: responseData.user._id,
+        walletAmount: response.walletamount,
+    };
+
+    fetch(`/verify-payment`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData),
+    })
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("Error fetching data");
+            }
+        })
+        .then((data) => {
+            window.location.href = `/order-placed/${data.orderId}`;
+        })
+        .catch((error) => {
+            // if verification fails, redirect to failed page
+            window.location.href = `/order-failed/${responseData.orderId}`;
+        });
+}
 
         async function handlePaymentFailure(orderId) {
             try {
@@ -627,4 +630,4 @@
             });
         }
     </script>
-</div>
+</div>   

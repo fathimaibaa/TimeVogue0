@@ -44,10 +44,11 @@
                     <div class="col-md-2">
                         <small><%= %></small>
                         <img
-                            src="<%= item.product.images[0].thumbnailUrl %>"
-                            alt="Product 1"
-                            class="img-fluid img-thumbnail"
-                        />
+  src="<%= item.product?.images?.[0]?.thumbnailUrl ? '/' + item.product.images[0].thumbnailUrl : '/assets/img/no-image.jpg' %>"
+  alt="Product"
+  class="img-fluid img-thumbnail"
+/>
+
                     </div>
                     <div class="col-md-2 d-flex flex-column align-items-center justify-content-center">
                         <p><strong><%= item.product.title %></strong></p>
@@ -75,16 +76,18 @@
                     && item.status !== "Returned") { %>
                         <div class="col-md-2 d-flex flex-column d-flex flex-column justify-content-center">
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="statusDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <%= item.status %>
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="statusDropdown">
-                                    <a class="dropdown-item <%= item.status === 'Pending' ? 'active' : '' %>" href="#">Pending</a>
-                                    <a class="dropdown-item <%= item.status === 'Shipped' ? 'active' : '' %>" href="#">Shipped</a>
-                                    <a class="dropdown-item <%= item.status === 'Delivered' ? 'active' : '' %>" href="#">Delivered</a>
-                                    <a class="dropdown-item <%= item.status === 'Cancelled' ? 'active' : '' %>" href="#">Cancelled</a>
-                                </div>
-                            </div>
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="statusDropdown-<%= item._id %>" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <%= item.status %>
+  </button>
+  <div class="dropdown-menu" aria-labelledby="statusDropdown-<%= item._id %>">
+    <% ["Pending", "Shipped", "Delivered", "Cancelled"].forEach(function(statusOption) { %>
+      <a class="dropdown-item" href="#" onclick="updateOrderStatus('<%= item._id %>', '<%= statusOption %>')">
+        <%= statusOption %>
+      </a>
+    <% }); %>
+  </div>
+</div>
+
                         </div>
                         
 
@@ -140,3 +143,27 @@
 <script src="https://code.jquery.com/jquery-3.6.4.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+
+
+<script>
+  function updateOrderStatus(orderId, newStatus) {
+    fetch(`/admin/orders/update/${orderId}?_method=PUT`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ status: newStatus })
+    })
+    .then(response => {
+      if (response.redirected) {
+        window.location.href = response.url;
+      } else {
+        location.reload();
+      }
+    })
+    .catch(error => {
+      alert('Failed to update status.');
+      console.error(error);
+    });
+  }
+</script>

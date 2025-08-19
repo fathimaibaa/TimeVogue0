@@ -12,22 +12,40 @@ const moment=require('moment');
 
 
 
+const Order = require('../models/orderModel'); // make sure path is correct
+
 exports.orderspage = asyncHandler(async (req, res) => {
-    try {
-        const userId = req.user._id;
+  try {
+    const userId = req.user._id;
 
-        const orders = await getOrders(userId);
+    const orders = await Order.find({ user: userId })
+  .populate({
+    path: 'orderItems',
+    populate: {
+      path: 'product',
+      select: 'title images',
+      populate: {
+        path: 'images',          // Populate the 'images' array inside 'product'
+        select: 'thumbnailUrl',  // Only get thumbnailUrl from Images collection
+      },
+    },
+  })
+  .lean();
 
-        res.render("shop/pages/orders", {
-            title: "Orders",
-            page: "orders",
-            orders,
-        });
-    } catch (error) {
-        throw new Error(error);
-    }
+
+    const filteredOrders = orders.filter(order =>
+      order.orderItems.every(item => item.isPaid !== 'pending')
+    );
+
+    res.render('shop/pages/orders', {
+      title: 'Orders',
+      page: 'orders',
+      orders: filteredOrders,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
 });
-
 
 exports.singleOrder = asyncHandler(async (req, res) => {
     try {

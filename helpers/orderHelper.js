@@ -38,6 +38,8 @@ module.exports = {
                 model: "Images",
             },
         });
+        console.log(order.product.images);
+
 
         const orders = await Order.findOne({ orderItems: orderId }).select("shippingAddress city orderedDate");
 
