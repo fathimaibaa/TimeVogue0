@@ -1,114 +1,112 @@
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
-const session = require('express-session')
-require('dotenv').config()
+const session = require('express-session');
 const bodyParser = require('body-parser');
 
-const passport = require('passport')
-const connectMongo = require('connect-mongo')
-const mongoose = require('mongoose')
-const connectFlash = require('connect-flash')
-const nocache = require('nocache')
-const expressLayouts = require('express-ejs-layouts')
+const passport = require('passport');
+const mongoose = require('mongoose');
+const connectFlash = require('connect-flash');
+const nocache = require('nocache');
+const expressLayouts = require('express-ejs-layouts');
 const methodOverride = require('method-override');
+const MongoStore = require('connect-mongo');
 
-const adminRoute = require('./routes/adminRoute')
+const adminRoute = require('./routes/adminRoute');
 const userRoute = require('./routes/userRoute');
-const dataBase = require('./config/dataBase')
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 
-const multer=require('multer');
-const sharp=require('sharp');
-
+const multer = require('multer');
+const sharp = require('sharp');
 
 const app = express();
-dataBase.dbConnect();
 
 
+// ✅ Direct MongoDB connection here
+mongoose.connect("mongodb+srv://fathimaibaa:dtNwrHMosy3lRTAy@cluster0.j50ma.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ MongoDB connected successfully"))
+.catch((err) => {
+  console.error("❌ Error connecting to MongoDB:", err.message);
+  process.exit(1);
+});
 
-app.use(nocache())
+
+// Middlewares
+app.use(nocache());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-
-const storage =multer.memoryStorage()
-const upload=multer({storage})
-
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 
-const MongoStore = connectMongo(session);
-const store = new MongoStore({ mongooseConnection: mongoose.connection });
-
+// ✅ Updated connect-mongo (new API)
+const store = MongoStore.create({
+  mongoUrl: "mongodb+srv://fathimaibaa:dtNwrHMosy3lRTAy@cluster0.j50ma.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+  collectionName: "sessions",
+});
 
 app.use(
-    session({
-        secret: process.env.SECRET,
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            httpOnly: true,
-        },
-        store: store
-    })
+  session({
+    secret: "poiuytrewq",   // 🔑 your session secret
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+    },
+    store: store,
+  })
 );
 
 
+// Flash messages
 app.use(connectFlash());
 app.use((req, res, next) => {
-    res.locals.messages = req.flash()
-    next();
-})
+  res.locals.messages = req.flash();
+  next();
+});
 
 
-
-
-
-app.use(passport.initialize())
-app.use(passport.session())
-require('./utility/passportAuth')
-
+// Passport
+app.use(passport.initialize());
+app.use(passport.session());
+require('./utility/passportAuth');
 
 app.use((req, res, next) => {
-    res.locals.user = req.user;
-    next()
-})
+  res.locals.user = req.user;
+  next();
+});
 
 
-
-
+// Static + Views
 app.use(express.static("public"));
 app.use("/admin", express.static(__dirname + "/public/admin"));
 
-app.use(expressLayouts)
+app.use(expressLayouts);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-
 
 app.use(methodOverride('_method'));
 
 
-
-
-
-app.use('/admin', adminRoute)
+// Routes
+app.use('/admin', adminRoute);
 app.use('/', userRoute);
 
 
+// Error handlers
 app.use(notFound);
 app.use(errorHandler);
 
 
-
-
-const PORT = process.env.PORT
+// Server
+const PORT = 4000;   // ✅ Hardcoded port instead of .env
 app.listen(PORT, () => {
-    console.log(`Server Started on http://localhost:${process.env.PORT}`)
-})
+  console.log(`🚀 Server Started on http://localhost:${PORT}`);
+});
+
 module.exports = app;
-
-
-
-
