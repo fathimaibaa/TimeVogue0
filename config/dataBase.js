@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const dbConnect = () => {
-    mongoose.connect(process.env.MONGO_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
+   mongoose.connect("mongodb+srv://fathimaibaa:dtNwrHMosy3lRTAy@cluster0.j50ma.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+
     .then(() => {
         console.log('Connected to MongoDB');
     })
