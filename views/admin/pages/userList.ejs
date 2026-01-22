@@ -32,13 +32,13 @@
 
                     <% if (users[i].isBlock) { %>
 
-                        <button type="submit" class="btn btn-success btn-sm block-button"
+                        <button type="button" class="btn btn-success btn-sm block-button"
                                 id="unblockUserButton"
                                 onclick="showConfirmation('<%- users[i]?._id %>')">unblock</button>
 
                         <% } else { %>
 
-                            <button type="submit" class="btn btn-danger btn-sm block-button"
+                            <button type="button" class="btn btn-danger btn-sm block-button"
                                 id="blockUserButton"
                                 onclick="getConfirmation('<%- users[i]?._id %>')">Block</button>
 
@@ -75,6 +75,7 @@
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 function getConfirmation(userId) {
    
@@ -103,9 +104,7 @@ function getConfirmation(userId) {
                         });
 
                         
-                        setTimeout(() => {
-                            location.reload();
-                        }, 2000);
+                        
                     } else {
                        
                     }
@@ -145,9 +144,6 @@ function showConfirmation(userId) {
                         });
 
                         
-                        setTimeout(() => {
-                            location.reload();
-                        }, 2000);
                     } else {
                        
                     }
@@ -159,4 +155,5 @@ function showConfirmation(userId) {
         }
     });
 }
+
 </script>

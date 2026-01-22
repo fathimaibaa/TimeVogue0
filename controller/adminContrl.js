@@ -161,8 +161,7 @@ const blockUser = expressHandler(async (req, res) => {
     }
 });
 
-
-
+    
 const unBlockUser = expressHandler(async (req, res) => {
     try {
         const id = req.params.id;
