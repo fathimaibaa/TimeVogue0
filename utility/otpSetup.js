@@ -129,7 +129,7 @@ function sendToken(email,token, name) {
             <p>Hello ${name},</p>
             <p>We received a request to reset your password. If you did not make this request, please ignore this email.</p>
             <p>To reset your password, click the following link:</p>
-            <form action="http://localhost:4000/resetPassword/${token}" method="post">
+            <form action="https://timevogue0.onrender.com/resetPassword/${token}" method="post">
             <button type="submit" class="reset-link">Change Password</button>
             </form>
             <p>This link will expire in [30 seconds].</p>
